@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.balajiprabhu.weatherapp.R;
@@ -46,11 +45,6 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public boolean isViewFromObject(@NotNull View view, @NotNull Object object) {
         return view == object;
-    }
-
-    @Override
-    public int getItemPosition(@NonNull Object object) {
-        return super.getItemPosition(object);
     }
 
     @NotNull

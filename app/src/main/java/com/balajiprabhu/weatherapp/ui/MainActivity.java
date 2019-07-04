@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         for(String cityName : mCityNameList){
 
-            WeatherService apiInterface = new RetrofitUtils().getService().create(WeatherService.class);
+            WeatherService apiInterface = new RetrofitUtils(this).getService().create(WeatherService.class);
             Call<BaseWeather> call = apiInterface.getWeather(cityName,"metric");
             call.enqueue(new Callback<BaseWeather>() {
                 @Override
