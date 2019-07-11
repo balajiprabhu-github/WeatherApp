@@ -1,10 +1,14 @@
+package com.balajiprabhu.weatherapp.network.model;
 
-package com.balajiprabhu.weatherapp.model;
+import androidx.lifecycle.ViewModel;
 
-import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
-public class BaseWeather {
+import java.util.List;
+
+public class BaseWeather extends ViewModel {
+
+    private static final String TAG = "BaseWeather";
 
     @SerializedName("coord")
     private Coordinates coord;
@@ -136,5 +140,6 @@ public class BaseWeather {
     public void setCod(Integer cod) {
         this.cod = cod;
     }
+
 
 }

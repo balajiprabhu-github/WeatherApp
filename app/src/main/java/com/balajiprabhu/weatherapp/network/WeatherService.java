@@ -1,6 +1,6 @@
 package com.balajiprabhu.weatherapp.network;
 
-import com.balajiprabhu.weatherapp.model.BaseWeather;
+import com.balajiprabhu.weatherapp.network.model.BaseWeather;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,85 +1,61 @@
 package com.balajiprabhu.weatherapp.ui;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.balajiprabhu.weatherapp.R;
-import com.balajiprabhu.weatherapp.model.BaseWeather;
-import com.squareup.picasso.Picasso;
+import com.balajiprabhu.weatherapp.databinding.ItemLayoutBinding;
+import com.balajiprabhu.weatherapp.view_model.WeatherViewModel;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 
 public class ViewPagerAdapter extends PagerAdapter {
 
-    private Context mContext;
-    private List<BaseWeather> mWeatherList;
 
+    private WeatherViewModel weatherViewModel;
 
-    ViewPagerAdapter(Context context, List<BaseWeather> mWeatherList) {
-        mContext = context;
-        this.mWeatherList = mWeatherList;
+    ViewPagerAdapter(WeatherViewModel weatherViewModel) {
+        this.weatherViewModel = weatherViewModel;
     }
 
     @Override
     public void destroyItem(@NotNull ViewGroup container, int position, @NotNull Object object) {
-        container.removeView((View) object);
+
+        ItemLayoutBinding itemLayoutBinding = (ItemLayoutBinding) object;
+        itemLayoutBinding.setViewModel(null);
+        container.removeView(itemLayoutBinding.getRoot());
+    }
+
+
+    @Override
+    public boolean isViewFromObject(@NotNull View view, @NotNull Object object) {
+        return ((ItemLayoutBinding) object).getRoot() == view;
     }
 
     @Override
     public int getCount() {
-        return mWeatherList.size();
+        return 6;
     }
 
-    @Override
-    public boolean isViewFromObject(@NotNull View view, @NotNull Object object) {
-        return view == object;
-    }
 
     @NotNull
     @Override
     public Object instantiateItem(@NotNull ViewGroup container, final int position) {
 
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_city, container, false);
+        ItemLayoutBinding itemLayoutBinding = DataBindingUtil.inflate(
+                LayoutInflater.from(container.getContext()), R.layout.item_layout, container, true);
 
-        TextView mDataTime = view.findViewById(R.id.tv_date_time);
-        TextView mTempature = view.findViewById(R.id.tv_temperature);
-        TextView mCityName = view.findViewById(R.id.tv_city_name);
-        TextView mDescription = view.findViewById(R.id.tv_weather_description);
-        ImageView mWeatherIcon = view.findViewById(R.id.img_weather_icon);
+        itemLayoutBinding.setViewModel(weatherViewModel);
+        itemLayoutBinding.executePendingBindings();
 
-        Integer currentDate = mWeatherList.get(position).getDt();
-        String iconCode = mWeatherList.get(position).getWeather().get(0).getIcon();
-        String iconUrl = "http://openweathermap.org/img/w/" + iconCode + ".png";
-        String description = mWeatherList.get(position).getWeather().get(0).getDescription().substring(0, 1).toUpperCase() + mWeatherList.get(position).getWeather().get(0).getDescription().substring(1);
-        Double temp = mWeatherList.get(position).getMain().getTemp();
-        String cityName = mWeatherList.get(position).getName();
-        @SuppressLint("SimpleDateFormat") String dateAsText = new SimpleDateFormat("EEE | MMMM dd").format(new Date(currentDate * 1000L));
+        return itemLayoutBinding;
 
-        mDataTime.setText(dateAsText);
-        mCityName.setText(cityName);
-        mDescription.setText(description);
-        mTempature.setText(String.format(temp.toString() + "%s", (char) 0x00B0));
-        Picasso.get().load(iconUrl).into(mWeatherIcon);
-
-        container.addView(view);
-
-        return view;
     }
-
-
 
 
 }

@@ -1,5 +1,5 @@
 
-package com.balajiprabhu.weatherapp.model;
+package com.balajiprabhu.weatherapp.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
