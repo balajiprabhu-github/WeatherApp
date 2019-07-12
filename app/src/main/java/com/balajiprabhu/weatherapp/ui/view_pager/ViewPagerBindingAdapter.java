@@ -1,4 +1,4 @@
-package com.balajiprabhu.weatherapp.ui;
+package com.balajiprabhu.weatherapp.ui.view_pager;
 
 import android.view.View;
 import android.widget.ImageView;

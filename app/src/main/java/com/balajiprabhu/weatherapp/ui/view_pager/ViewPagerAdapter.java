@@ -1,4 +1,4 @@
-package com.balajiprabhu.weatherapp.ui;
+package com.balajiprabhu.weatherapp.ui.view_pager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     private WeatherViewModel weatherViewModel;
 
-    ViewPagerAdapter(WeatherViewModel weatherViewModel) {
+    public ViewPagerAdapter(WeatherViewModel weatherViewModel) {
         this.weatherViewModel = weatherViewModel;
     }
 

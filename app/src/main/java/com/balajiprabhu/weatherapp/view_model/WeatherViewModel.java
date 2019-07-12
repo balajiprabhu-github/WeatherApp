@@ -11,6 +11,7 @@ import androidx.lifecycle.OnLifecycleEvent;
 import com.balajiprabhu.weatherapp.network.RetrofitUtils;
 import com.balajiprabhu.weatherapp.network.WeatherService;
 import com.balajiprabhu.weatherapp.network.model.BaseWeather;
+import com.balajiprabhu.weatherapp.ui.recyclerview.RecyclerViewAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -31,54 +32,89 @@ public class WeatherViewModel implements LifecycleObserver {
     public ObservableField<String> description = new ObservableField<>();
     public ObservableField<String> iconCode = new ObservableField<>();
     public ObservableField<String> formattedTemperature = new ObservableField<>();
-    public ObservableField<Integer> citySize = new ObservableField<>();
-    public List<String> mCityNameList = new ArrayList<>();
+    private List<String> mCityNameList = new ArrayList<>();
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private List<ItemWeatherViewModel> itemWeatherViewModelList = new ArrayList<>();
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     void initState() {
         createCityList();
-        getWeather(0);
+//        getWeather(0);
+        getWeather();
+
     }
 
-    public void getWeather(int position) {
+    public void getWeather(/*int position*/) {
 
-        WeatherService apiInterface = new RetrofitUtils().getService().create(WeatherService.class);
-        Call<BaseWeather> call = apiInterface.getWeather(mCityNameList.get(position), "metric");
-        call.enqueue(new Callback<BaseWeather>() {
-            @Override
-            public void onResponse(@NotNull Call<BaseWeather> call, @NotNull Response<BaseWeather> response) {
-                Log.e(TAG, "onResponse: " + response.body());
+        for(String mCityName : mCityNameList){
 
-                BaseWeather baseWeather = response.body();
+            WeatherService apiInterface = new RetrofitUtils().getService().create(WeatherService.class);
+            Call<BaseWeather> call = apiInterface.getWeather(mCityName, "metric");
+            call.enqueue(new Callback<BaseWeather>() {
+                @Override
+                public void onResponse(@NotNull Call<BaseWeather> call, @NotNull Response<BaseWeather> response) {
+                    Log.e(TAG, "onResponse: " + response.body());
 
-                cityName.set(baseWeather.getName());
-                @SuppressLint("SimpleDateFormat")
-                String dateAsText = new SimpleDateFormat("EEE | MMMM dd").format(new Date(baseWeather.getDt() * 1000L));
-                formattedDate.set(dateAsText);
-                description.set(baseWeather.getWeather().get(0).getDescription());
-                iconCode.set(baseWeather.getWeather().get(0).getIcon());
-                formattedTemperature.set(String.format(baseWeather.getMain().getTemp().toString() + "%s", (char) 0x00B0));
+                    BaseWeather baseWeather = response.body();
+
+                    if(baseWeather != null){
+
+                        cityName.set(baseWeather.getName());
+                        @SuppressLint("SimpleDateFormat")
+                        String dateAsText = new SimpleDateFormat("EEE | MMMM dd").format(new Date(baseWeather.getDt() * 1000L));
+                        formattedDate.set(dateAsText);
+                        description.set(baseWeather.getWeather().get(0).getDescription());
+                        iconCode.set(baseWeather.getWeather().get(0).getIcon());
+                        formattedTemperature.set(String.format(baseWeather.getMain().getTemp().toString() + "%s", (char) 0x00B0));
+
+                        ItemWeatherViewModel itemWeatherViewModel = new ItemWeatherViewModel();
+                        itemWeatherViewModel.setCityName(cityName.get());
+                        itemWeatherViewModel.setFormattedDate(formattedDate.get());
+                        itemWeatherViewModel.setDescription(description.get().substring(0, 1).toUpperCase() + description.get().substring(1));
+                        itemWeatherViewModel.setIconCode(iconCode.get());
+                        itemWeatherViewModel.setFormattedTemperature(formattedTemperature.get());
+                        itemWeatherViewModelList.add(itemWeatherViewModel);
+
+                        recyclerViewAdapter.notifyDataSetChanged();
+
+                    }
 
 
-            }
+                }
 
-            @Override
-            public void onFailure(@NotNull Call<BaseWeather> call, @NotNull Throwable throwable) {
-                Log.e(TAG, "onFailure: " + throwable.getLocalizedMessage());
-            }
-        });
+                @Override
+                public void onFailure(@NotNull Call<BaseWeather> call, @NotNull Throwable throwable) {
+                    Log.e(TAG, "onFailure: " + throwable.getLocalizedMessage());
+                }
+            });
 
+
+
+        }
+
+    }
+
+    public RecyclerViewAdapter setRecyclerViewAdapter(){
+        return recyclerViewAdapter = new RecyclerViewAdapter(itemWeatherViewModelList);
     }
 
     private void createCityList() {
+
         mCityNameList.add("Chennai");
         mCityNameList.add("Coimbatore");
         mCityNameList.add("Madurai");
         mCityNameList.add("Bangalore");
         mCityNameList.add("Kochi");
         mCityNameList.add("Mumbai");
+        mCityNameList.add("Salem");
+        mCityNameList.add("Ooty");
+        mCityNameList.add("Goa");
+        mCityNameList.add("Tirupur");
+        mCityNameList.add("Hosur");
+        mCityNameList.add("Erode");
+        mCityNameList.add("Tiruchi");
+        mCityNameList.add("Tirupati");
 
-        citySize.set(mCityNameList.size());
     }
 
 
