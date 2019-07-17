@@ -26,4 +26,6 @@ public class WeatherApplication extends Application implements HasActivityInject
     public AndroidInjector<Activity> activityInjector() {
         return dispatchingAndroidInjector;
     }
+
+
 }
