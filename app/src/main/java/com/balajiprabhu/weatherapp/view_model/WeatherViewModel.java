@@ -7,18 +7,17 @@ import androidx.databinding.ObservableField;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
-
 import com.balajiprabhu.weatherapp.network.RetrofitUtils;
 import com.balajiprabhu.weatherapp.network.WeatherService;
 import com.balajiprabhu.weatherapp.network.model.BaseWeather;
 import com.balajiprabhu.weatherapp.ui.recyclerview.RecyclerViewAdapter;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +34,11 @@ public class WeatherViewModel implements LifecycleObserver {
     private List<String> mCityNameList = new ArrayList<>();
     private RecyclerViewAdapter recyclerViewAdapter;
     private List<ItemWeatherViewModel> itemWeatherViewModelList = new ArrayList<>();
+
+
+    @Inject
+    public WeatherViewModel() {
+    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     void initState() {
