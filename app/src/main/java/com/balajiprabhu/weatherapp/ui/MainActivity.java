@@ -11,13 +11,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.balajiprabhu.weatherapp.R;
 import com.balajiprabhu.weatherapp.databinding.ActivityMainBinding;
 import com.balajiprabhu.weatherapp.ui.recyclerview.RecyclerViewAdapter;
+import com.balajiprabhu.weatherapp.utils.BaseActivity;
+import com.balajiprabhu.weatherapp.utils.UnboundViewEventBus;
+import com.balajiprabhu.weatherapp.view_model.ItemWeatherViewModel;
 import com.balajiprabhu.weatherapp.view_model.WeatherViewModel;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import io.reactivex.disposables.CompositeDisposable;
 
-public class MainActivity extends AppCompatActivity implements LifecycleOwner {
+public class MainActivity extends BaseActivity implements LifecycleOwner {
+
+
+    @Inject
+    UnboundViewEventBus eventBus;
 
     @Inject
     WeatherViewModel weatherViewModel;
@@ -44,6 +52,15 @@ public class MainActivity extends AppCompatActivity implements LifecycleOwner {
 
 
     }
+
+    @Override
+    protected CompositeDisposable registerUnboundViewEvents() {
+        CompositeDisposable events = new CompositeDisposable();
+        events.add(eventBus.startActivity(ItemWeatherViewModel.class).subscribe(this::startActivity));
+        return events;
+    }
+
+
 
 
 }

@@ -1,5 +1,9 @@
 package com.balajiprabhu.weatherapp.view_model;
 
+import com.balajiprabhu.weatherapp.ui.WeatherDetailsActivity;
+import com.balajiprabhu.weatherapp.utils.StartActivityEvent;
+import com.balajiprabhu.weatherapp.utils.UnboundViewEventBus;
+
 import androidx.databinding.BaseObservable;
 
 public class ItemWeatherViewModel extends BaseObservable {
@@ -9,6 +13,12 @@ public class ItemWeatherViewModel extends BaseObservable {
     public String description ;
     public String iconCode ;
     public String formattedTemperature ;
+
+    protected final UnboundViewEventBus eventBus;
+
+    public ItemWeatherViewModel(UnboundViewEventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     public String getCityName() {
         return cityName;
@@ -49,4 +59,16 @@ public class ItemWeatherViewModel extends BaseObservable {
     public void setFormattedTemperature(String formattedTemperature) {
         this.formattedTemperature = formattedTemperature;
     }
+
+
+    public void navigate() {
+        emitStartActivityEvent(WeatherDetailsActivity.class);
+    }
+
+    protected void emitStartActivityEvent(Class startActivityClazz) {
+        StartActivityEvent startActivityEvent = StartActivityEvent.build(this).activityName(startActivityClazz);
+        eventBus.send(startActivityEvent);
+    }
+
+
 }

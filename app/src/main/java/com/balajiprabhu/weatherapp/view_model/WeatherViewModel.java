@@ -10,6 +10,7 @@ import androidx.lifecycle.OnLifecycleEvent;
 import com.balajiprabhu.weatherapp.network.WeatherServiceManager;
 import com.balajiprabhu.weatherapp.network.model.BaseWeather;
 import com.balajiprabhu.weatherapp.ui.recyclerview.RecyclerViewAdapter;
+import com.balajiprabhu.weatherapp.utils.UnboundViewEventBus;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class WeatherViewModel implements LifecycleObserver {
             iconCode.set(baseWeather.getWeather().get(0).getIcon());
             formattedTemperature.set(String.format(baseWeather.getMain().getTemp().toString() + "%s", (char) 0x00B0));
 
-            ItemWeatherViewModel itemWeatherViewModel = new ItemWeatherViewModel();
+            ItemWeatherViewModel itemWeatherViewModel = new ItemWeatherViewModel(new UnboundViewEventBus());
             itemWeatherViewModel.setCityName(cityName.get());
             itemWeatherViewModel.setFormattedDate(formattedDate.get());
             itemWeatherViewModel.setDescription(description.get().substring(0, 1).toUpperCase() + description.get().substring(1));
