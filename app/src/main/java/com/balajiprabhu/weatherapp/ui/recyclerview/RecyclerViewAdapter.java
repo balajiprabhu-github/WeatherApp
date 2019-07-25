@@ -8,15 +8,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.balajiprabhu.weatherapp.databinding.ItemRecyclerviewBinding;
 import com.balajiprabhu.weatherapp.view_model.ItemWeatherViewModel;
+import com.balajiprabhu.weatherapp.view_model.WeatherViewModel;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<ItemWeatherViewModel> itemWeatherViewModelList;
+    private WeatherViewModel weatherViewModel;
 
-    public RecyclerViewAdapter(List<ItemWeatherViewModel> itemWeatherViewModelList) {
+    public RecyclerViewAdapter(List<ItemWeatherViewModel> itemWeatherViewModelList, WeatherViewModel weatherViewModel) {
         this.itemWeatherViewModelList = itemWeatherViewModelList;
+        this.weatherViewModel = weatherViewModel;
     }
 
     @NonNull
@@ -33,7 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         ItemWeatherViewModel itemWeatherViewModel = itemWeatherViewModelList.get(position);
-        holder.bind(itemWeatherViewModel);
+        holder.bind(itemWeatherViewModel, weatherViewModel);
 
     }
 
@@ -51,9 +54,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             this.itemRecyclerviewBinding = itemRecyclerviewBinding;
         }
 
-        public void bind(ItemWeatherViewModel itemWeatherViewModel) {
+        public void bind(ItemWeatherViewModel itemWeatherViewModel, WeatherViewModel weatherViewModel) {
 
-            itemRecyclerviewBinding.setViewModel(itemWeatherViewModel);
+            itemRecyclerviewBinding.setViewModel(weatherViewModel);
+            itemRecyclerviewBinding.setItemViewModel(itemWeatherViewModel);
             itemRecyclerviewBinding.executePendingBindings();
         }
     }

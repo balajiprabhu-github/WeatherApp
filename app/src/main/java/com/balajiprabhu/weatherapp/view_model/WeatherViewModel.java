@@ -9,7 +9,9 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import com.balajiprabhu.weatherapp.network.WeatherServiceManager;
 import com.balajiprabhu.weatherapp.network.model.BaseWeather;
+import com.balajiprabhu.weatherapp.ui.WeatherDetailsActivity;
 import com.balajiprabhu.weatherapp.ui.recyclerview.RecyclerViewAdapter;
+import com.balajiprabhu.weatherapp.utils.StartActivityEvent;
 import com.balajiprabhu.weatherapp.utils.UnboundViewEventBus;
 
 import java.text.SimpleDateFormat;
@@ -32,10 +34,13 @@ public class WeatherViewModel implements LifecycleObserver {
     private List<ItemWeatherViewModel> itemWeatherViewModelList = new ArrayList<>();
 
     private WeatherServiceManager weatherServiceManager;
+    private UnboundViewEventBus unboundViewEventBus;
+
 
     @Inject
-    public WeatherViewModel(WeatherServiceManager weatherServiceManager) {
+    public WeatherViewModel(WeatherServiceManager weatherServiceManager, UnboundViewEventBus unboundViewEventBus) {
         this.weatherServiceManager = weatherServiceManager;
+        this.unboundViewEventBus = unboundViewEventBus;
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -73,7 +78,7 @@ public class WeatherViewModel implements LifecycleObserver {
             iconCode.set(baseWeather.getWeather().get(0).getIcon());
             formattedTemperature.set(String.format(baseWeather.getMain().getTemp().toString() + "%s", (char) 0x00B0));
 
-            ItemWeatherViewModel itemWeatherViewModel = new ItemWeatherViewModel(new UnboundViewEventBus());
+            ItemWeatherViewModel itemWeatherViewModel = new ItemWeatherViewModel();
             itemWeatherViewModel.setCityName(cityName.get());
             itemWeatherViewModel.setFormattedDate(formattedDate.get());
             itemWeatherViewModel.setDescription(description.get().substring(0, 1).toUpperCase() + description.get().substring(1));
@@ -89,7 +94,7 @@ public class WeatherViewModel implements LifecycleObserver {
     }
 
     public RecyclerViewAdapter setRecyclerViewAdapter(){
-        return recyclerViewAdapter = new RecyclerViewAdapter(itemWeatherViewModelList);
+        return recyclerViewAdapter = new RecyclerViewAdapter(itemWeatherViewModelList, this);
     }
 
     private void createCityList() {
@@ -109,6 +114,15 @@ public class WeatherViewModel implements LifecycleObserver {
         mCityNameList.add("Tiruchi");
         mCityNameList.add("Tirupati");
 
+    }
+
+    public void navigate() {
+        emitStartActivityEvent(WeatherDetailsActivity.class);
+    }
+
+    protected void emitStartActivityEvent(Class startActivityClazz) {
+        StartActivityEvent startActivityEvent = StartActivityEvent.build(this).activityName(startActivityClazz);
+        unboundViewEventBus.send(startActivityEvent);
     }
 
 

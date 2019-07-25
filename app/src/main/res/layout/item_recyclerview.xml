@@ -5,8 +5,13 @@
 
     <data>
 
+
         <variable
             name="viewModel"
+            type="com.balajiprabhu.weatherapp.view_model.WeatherViewModel" />
+
+        <variable
+            name="itemViewModel"
             type="com.balajiprabhu.weatherapp.view_model.ItemWeatherViewModel" />
 
     </data>
@@ -27,7 +32,7 @@
             android:layout_marginTop="16dp"
             android:textColor="@android:color/white"
             android:textSize="26sp"
-            android:text="@{viewModel.cityName}"
+            android:text="@{itemViewModel.cityName}"
             app:fontFamily="sans-serif-thin"
             app:layout_constraintStart_toEndOf="@+id/icon"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +45,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
-            android:text="@{viewModel.formattedTemperature}"
+            android:text="@{itemViewModel.formattedTemperature}"
             android:textColor="@android:color/white"
             android:textSize="30sp"
             app:fontFamily="sans-serif-thin"
@@ -72,7 +77,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
-            android:text="@{viewModel.formattedDate}"
+            android:text="@{itemViewModel.formattedDate}"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon"
@@ -87,7 +92,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="16dp"
-            android:text="@{viewModel.description}"
+            android:text="@{itemViewModel.description}"
             android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/date"

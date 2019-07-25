@@ -5,7 +5,6 @@ import android.net.Uri;
 
 public class StartActivityEvent extends BaseUnboundViewEvent {
 
-    public final static String RESULT_KEY = "result";
     private Class startActivityClazz;
     private boolean launchExternalApplication;
     private boolean isStartActivityForResult;

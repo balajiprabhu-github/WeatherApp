@@ -43,10 +43,8 @@ public class MainActivity extends BaseActivity implements LifecycleOwner {
 
         RecyclerViewAdapter recyclerViewAdapter = weatherViewModel.setRecyclerViewAdapter();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-
         activityMainBinding.recyclerView.setLayoutManager(linearLayoutManager);
         activityMainBinding.recyclerView.setHasFixedSize(true);
-
         activityMainBinding.recyclerView.setAdapter(recyclerViewAdapter);
         activityMainBinding.setViewModel(weatherViewModel);
 
@@ -56,7 +54,7 @@ public class MainActivity extends BaseActivity implements LifecycleOwner {
     @Override
     protected CompositeDisposable registerUnboundViewEvents() {
         CompositeDisposable events = new CompositeDisposable();
-        events.add(eventBus.startActivity(ItemWeatherViewModel.class).subscribe(this::startActivity));
+        events.add(eventBus.startActivity(WeatherViewModel.class).subscribe(this::startActivity));
         return events;
     }
 
