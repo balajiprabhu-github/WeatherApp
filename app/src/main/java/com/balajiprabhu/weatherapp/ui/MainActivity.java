@@ -1,82 +1,64 @@
 package com.balajiprabhu.weatherapp.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.balajiprabhu.weatherapp.R;
-import com.balajiprabhu.weatherapp.model.BaseWeather;
-import com.balajiprabhu.weatherapp.network.RetrofitUtils;
-import com.balajiprabhu.weatherapp.network.WeatherService;
+import com.balajiprabhu.weatherapp.databinding.ActivityMainBinding;
+import com.balajiprabhu.weatherapp.ui.recyclerview.RecyclerViewAdapter;
+import com.balajiprabhu.weatherapp.utils.BaseActivity;
+import com.balajiprabhu.weatherapp.utils.UnboundViewEventBus;
+import com.balajiprabhu.weatherapp.view_model.ItemWeatherViewModel;
+import com.balajiprabhu.weatherapp.view_model.WeatherViewModel;
 
-import org.jetbrains.annotations.NotNull;
+import javax.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.List;
+import dagger.android.AndroidInjection;
+import io.reactivex.disposables.CompositeDisposable;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+public class MainActivity extends BaseActivity implements LifecycleOwner {
 
-public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    @Inject
+    UnboundViewEventBus eventBus;
 
-    private ViewPager mViewPager;
-    private List<String> mCityNameList = new ArrayList<>();
-    private List<BaseWeather> mWeatherList = new ArrayList<>();
+    @Inject
+    WeatherViewModel weatherViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        AndroidInjection.inject(this);
+        ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        mViewPager = findViewById(R.id.view_pager);
+        this.getLifecycle().addObserver(weatherViewModel);
 
-        createCityList();
-        getWeather();
+//        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(weatherViewModel);
+//        activityMainBinding.viewPager.setAdapter(viewPagerAdapter);
 
-    }
+        RecyclerViewAdapter recyclerViewAdapter = weatherViewModel.setRecyclerViewAdapter();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+        activityMainBinding.recyclerView.setLayoutManager(linearLayoutManager);
+        activityMainBinding.recyclerView.setHasFixedSize(true);
+        activityMainBinding.recyclerView.setAdapter(recyclerViewAdapter);
+        activityMainBinding.setViewModel(weatherViewModel);
 
-    private void createCityList(){
-        mCityNameList.add("Chennai");
-        mCityNameList.add("Coimbatore");
-        mCityNameList.add("Madurai");
-        mCityNameList.add("Bangalore");
-        mCityNameList.add("Kochi");
-        mCityNameList.add("Mumbai");
-    }
-
-    private void getWeather() {
-
-        for(String cityName : mCityNameList){
-
-            WeatherService apiInterface = new RetrofitUtils(this).getService().create(WeatherService.class);
-            Call<BaseWeather> call = apiInterface.getWeather(cityName,"metric");
-            call.enqueue(new Callback<BaseWeather>() {
-                @Override
-                public void onResponse(@NotNull Call<BaseWeather> call, @NotNull Response<BaseWeather> response) {
-                    Log.e(TAG, "onResponse: " + response.body());
-                    if(response.body() != null){
-                        BaseWeather mBaseWeather = response.body();
-                        mWeatherList.add(mBaseWeather);
-
-                        if(mCityNameList.size() == mWeatherList.size()){
-                            mViewPager.setAdapter(new ViewPagerAdapter(MainActivity.this,mWeatherList));
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NotNull Call<BaseWeather> call, @NotNull Throwable throwable) {
-                    Log.e(TAG, "onFailure: " + throwable.getLocalizedMessage());
-                }
-            });
-
-        }
 
     }
+
+    @Override
+    protected CompositeDisposable registerUnboundViewEvents() {
+        CompositeDisposable events = new CompositeDisposable();
+        events.add(eventBus.startActivity(WeatherViewModel.class).subscribe(this::startActivity));
+        return events;
+    }
+
+
+
 
 }

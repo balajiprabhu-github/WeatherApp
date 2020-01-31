@@ -1,8 +1,8 @@
+package com.balajiprabhu.weatherapp.network.model;
 
-package com.balajiprabhu.weatherapp.model;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-import com.google.gson.annotations.SerializedName;
 
 public class BaseWeather {
 
@@ -136,5 +136,6 @@ public class BaseWeather {
     public void setCod(Integer cod) {
         this.cod = cod;
     }
+
 
 }
